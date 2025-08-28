@@ -1,0 +1,50 @@
+{
+  "name": "taxi-fare-train",
+  "git_source": {
+    "git_url": "https://github.com/your-org/taxi-fare-service.git",
+    "git_branch": "main"
+  },
+  "tasks": [
+    {
+      "task_key": "train",
+      "description": "Train taxi fare model and log to MLflow",
+      "notebook_task": {
+        "notebook_path": "notebooks/train_job.py",
+        "source": "GIT"
+      },
+      "job_cluster_key": "single_node"
+    },
+    {
+      "task_key": "promote",
+      "description": "Promote latest model to Production if MAE improved",
+      "notebook_task": {
+        "notebook_path": "notebooks/promote_job.py",
+        "base_parameters": {
+          "model_name": "taxi_fare_model"
+        },
+        "source": "GIT"
+      },
+      "depends_on": [
+        {
+          "task_key": "train"
+        }
+      ],
+      "job_cluster_key": "single_node"
+    }
+  ],
+  "job_clusters": [
+    {
+      "job_cluster_key": "single_node",
+      "new_cluster": {
+        "spark_version": "13.3.x-scala2.12",
+        "spark_conf": {
+          "spark.master": "local[*]",
+          "spark.databricks.cluster.profile": "singleNode"
+        },
+        "num_workers": 0,
+        "node_type_id": "Standard_D4as_v5"
+      }
+    }
+  ],
+  "max_concurrent_runs": 1
+}

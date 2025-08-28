@@ -1,0 +1,15 @@
+data_path: data/sample.csv   # local CSV for quickstart/demo
+target_col: fare_amount
+datetime_col: pickup_datetime
+feature_mapping:
+  pickup_lat: pickup_lat
+  pickup_lon: pickup_lon
+  dropoff_lat: dropoff_lat
+  dropoff_lon: dropoff_lon
+model_params:
+  n_estimators: 200
+  random_state: 42
+mlflow_uri: "file:./mlruns"
+experiment_name: "taxi_fare_experiment"
+model_registry_name: "taxi_fare_model"
+artifacts_dir: "artifacts/models"
