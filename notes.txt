@@ -15,8 +15,7 @@ Starta APIt: uvicorn app.main:app --reload --port 8080
 
 Testa endpoints i nytt terminalfönster:
 - Hälsa: curl http://localhost:8080/health
-- Prediktion: curl -X POST http://localhost:8080/predict -H "Content-Type: application/json" \
-  -d "{\"pickup_lat\":59.33,\"pickup_lon\":18.06,\"dropoff_lat\":59.36,\"dropoff_lon\":18.01,\"pickup_datetime\":\"2025-01-01T10:00:00Z\"}"
+- Prediktion: curl -X POST http://localhost:8080/predict -H "Content-Type: application/json" \ -d "{\"pickup_lat\":59.33,\"pickup_lon\":18.06,\"dropoff_lat\":59.36,\"dropoff_lon\":18.01,\"pickup_datetime\":\"2025-01-01T10:00:00Z\"}"
 - Prometheus-metrics: curl http://localhost:8080/metrics
 
 

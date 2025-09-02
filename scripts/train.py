@@ -10,8 +10,14 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_absolute_error
 #from evidently.report import Report
 #from evidently.metric_preset import DataDriftPreset
-from evidently import Report
-from evidently.metric_preset import DataDriftPreset
+
+# överst, ersätt imports med:
+try:
+    from evidently.report import Report
+    from evidently.metric_preset import DataDriftPreset
+    EVIDENTLY_OK = True
+except Exception:
+    EVIDENTLY_OK = False
 
 
 def main(config_path: str):
@@ -45,17 +51,29 @@ def main(config_path: str):
         mlflow.log_artifact(str(model_path))
 
         # ---- Monitoring hook: generate Evidently data drift report (train vs test) ----
-        report = Report(metrics=[DataDriftPreset()])
+        #report = Report(metrics=[DataDriftPreset()])
         # Build small dataframes to compare distributional drift on the features
-        import pandas as pd
-        df_train = pd.DataFrame(X_train, columns=X.columns)
-        df_test = pd.DataFrame(X_test, columns=X.columns)
-        report.run(reference_data=df_train, current_data=df_test)
-        report_path = artifacts_dir.parent / "evidently_data_drift_report.html"
-        report.save_html(str(report_path))
-        mlflow.log_artifact(str(report_path))
+        #import pandas as pd
+        #df_train = pd.DataFrame(X_train, columns=X.columns)
+        #df_test = pd.DataFrame(X_test, columns=X.columns)
+        #report.run(reference_data=df_train, current_data=df_test)
+        #report_path = artifacts_dir.parent / "evidently_data_drift_report.html"
+        #report.save_html(str(report_path))
+        #mlflow.log_artifact(str(report_path))
 
-        print(f"Saved model → {model_path} | MAE={mae:.4f} | Evidently report logged: {report_path}")
+        if EVIDENTLY_OK:
+            from pandas import DataFrame
+            df_train = DataFrame(X_train, columns=X.columns)
+            df_test = DataFrame(X_test, columns=X.columns)
+            report = Report(metrics=[DataDriftPreset()])
+            report.run(reference_data=df_train, current_data=df_test)
+            report_path = artifacts_dir.parent / "evidently_data_drift_report.html"
+            report.save_html(str(report_path))
+            mlflow.log_artifact(str(report_path))
+            print(f"Saved model → {model_path} | MAE={mae:.4f} | Evidently report logged: {report_path}")
+        else:
+            print("Evidently saknas/inkompatibelt – hoppar över drift-rapporten.")
+            print(f"Saved model → {model_path} | MAE={mae:.4f}")
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
