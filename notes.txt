@@ -1,0 +1,26 @@
+// Använd makefile (FUNKAR INTE PÅ WINDOWS):
+make install     # steg 1
+make test        # steg 2
+make train       # steg 3
+make api         # steg 4
+make docker-build docker-run  # steg 5
+//
+
+
+Starta venv i cmd: .\.venv\Scripts\activate
+Kör tester (se om allt funkar): pytest -q (--> kör alla koder som innehåller test_ eller _test i namnet)
+Träna modellen: python scripts/train.py --config configs/training.yaml
+Öppna MLFlow lokalt: mlflow ui (http://127.0.0.1:5000)
+Starta APIt: uvicorn app.main:app --reload --port 8080
+
+Testa endpoints i nytt terminalfönster:
+- Hälsa: curl http://localhost:8080/health
+- Prediktion: curl -X POST http://localhost:8080/predict -H "Content-Type: application/json" \
+  -d "{\"pickup_lat\":59.33,\"pickup_lon\":18.06,\"dropoff_lat\":59.36,\"dropoff_lon\":18.01,\"pickup_datetime\":\"2025-01-01T10:00:00Z\"}"
+- Prometheus-metrics: curl http://localhost:8080/metrics
+
+
+Kör i Docker: docker build -t taxi-fare-service -f docker/Dockerfile .
+docker run --rm -p 8080:8080 taxi-fare-service
+
+
