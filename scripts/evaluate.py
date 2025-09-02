@@ -2,7 +2,7 @@ import argparse, yaml
 from pathlib import Path
 import pandas as pd
 from sklearn.metrics import mean_absolute_error
-from src.taxi_fare.predict import load_model_from_path, predict_single
+from taxi_fare.predict import load_model_from_path, predict_single
 
 def main(config_path: str):
     cfg = yaml.safe_load(Path(config_path).read_text())

@@ -6,7 +6,7 @@ from typing import Optional
 import yaml
 from pathlib import Path
 
-from src.taxi_fare.predict import predict_single, load_model_from_path
+from taxi_fare.predict import predict_single, load_model_from_path
 
 app = FastAPI(title="Taxi Fare Service")
 # Prometheus metrics

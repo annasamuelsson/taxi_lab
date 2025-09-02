@@ -1,4 +1,4 @@
-from src.taxi_fare.features import build_features
+from taxi_fare.features import build_features
 import pandas as pd
 
 def test_build_features():

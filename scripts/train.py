@@ -3,12 +3,14 @@ import yaml
 from pathlib import Path
 import mlflow
 import mlflow.sklearn
-from src.taxi_fare.data import load_training_data
-from src.taxi_fare.features import build_features
-from src.taxi_fare.model import train_model, save_model
+from taxi_fare.data import load_training_data
+from taxi_fare.features import build_features
+from taxi_fare.model import train_model, save_model
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_absolute_error
-from evidently.report import Report
+#from evidently.report import Report
+#from evidently.metric_preset import DataDriftPreset
+from evidently import Report
 from evidently.metric_preset import DataDriftPreset
 
 
