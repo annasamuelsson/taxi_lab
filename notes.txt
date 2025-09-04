@@ -23,3 +23,7 @@ Kör i Docker: docker build -t taxi-fare-service -f docker/Dockerfile .
 docker run --rm -p 8080:8080 taxi-fare-service
 
 
+
+
+
+
