@@ -1,0 +1,28 @@
+name: Deploy Databricks Job
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      JOB_NAME: taxi-fare-train
+      # Valfria overrides om du behöver:
+      # MODEL_NAME: taxi_fare_model
+      # NODE_TYPE_ID: Standard_D4as_v5
+      # SPARK_VERSION: 13.3.x-scala2.12
+      # EXISTING_CLUSTER_ID: <om du vill köra på ett redan skapat job cluster>
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy/Update Databricks Job
+        env:
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+          BRANCH: ${{ github.ref_name }}
+          # REPO_URL lämnas tom -> skriptet använder https://github.com/${{ github.repository }}.git
+        run: |
+          python .github/scripts/deploy_job.py
