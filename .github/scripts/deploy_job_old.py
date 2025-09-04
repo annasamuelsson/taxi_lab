@@ -21,16 +21,18 @@ def api(path, payload=None, method="GET"):
     url = HOST.rstrip("/") + path
     req = urllib.request.Request(url, headers=headers, method=method)
     if payload is not None:
-        req.data = json.dumps(payload).encode("utf-8")
+        data = json.dumps(payload).encode("utf-8")
+        req.data = data
     with urllib.request.urlopen(req) as resp:
         return json.loads(resp.read().decode())
 
-# --- Tasks ---
+# Build tasks
 train_task = {
     "task_key": "train",
     "description": "Train taxi fare model and log to MLflow",
     "notebook_task": {"notebook_path": "notebooks/train_job.py", "source": "GIT"},
     "timeout_seconds": 0,
+    "email_notifications": {},
 }
 
 promote_task = {
@@ -48,7 +50,10 @@ promote_task = {
 settings = {
     "name": JOB_NAME,
     "max_concurrent_runs": 1,
-    "git_source": {"git_url": REPO_URL, "git_branch": BRANCH},
+    "git_source": {
+        "git_url": REPO_URL,
+        "git_branch": BRANCH
+    },
     "tasks": [train_task, promote_task],
 }
 
@@ -71,16 +76,18 @@ else:
     train_task["job_cluster_key"] = "single_node"
     promote_task["job_cluster_key"] = "single_node"
 
-# --- Create or update job ---
+# List existing jobs
 jobs = api("/api/2.1/jobs/list").get("jobs", [])
 job = next((j for j in jobs if j.get("settings", {}).get("name") == JOB_NAME), None)
 
 if job:
     job_id = job["job_id"]
     print(f"Updating existing job {JOB_NAME} (id={job_id})")
-    api("/api/2.1/jobs/reset", payload={"job_id": job_id, "new_settings": settings}, method="POST")
+    payload = {"job_id": job_id, "new_settings": settings}
+    api("/api/2.1/jobs/reset", payload=payload, method="POST")
     print("Job reset successful.")
 else:
     print(f"Creating new job {JOB_NAME}")
-    created = api("/api/2.1/jobs/create", payload=settings, method="POST")
+    payload = settings
+    created = api("/api/2.1/jobs/create", payload=payload, method="POST")
     print("Job created with id:", created.get("job_id"))
