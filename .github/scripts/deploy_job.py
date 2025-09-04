@@ -45,12 +45,32 @@ promote_task = {
     "depends_on": [{"task_key": "train"}],
 }
 
+#settings = {
+#    "name": JOB_NAME,
+#    "max_concurrent_runs": 1,
+#    "git_source": {"git_url": REPO_URL, "git_branch": BRANCH},
+#    "tasks": [train_task, promote_task],
+#}
+
+GIT_PROVIDER = os.environ.get("GIT_PROVIDER", "gitHub")
+GIT_TOKEN = os.environ.get("GIT_TOKEN")  # valfri: krävs om repo är privat och inte redan integrerat i Databricks
+
+git_source = {
+    "git_url": REPO_URL,
+    "git_provider": GIT_PROVIDER,
+    "git_branch": BRANCH,
+}
+if GIT_TOKEN:
+    git_source["git_token"] = GIT_TOKEN
+
 settings = {
     "name": JOB_NAME,
     "max_concurrent_runs": 1,
-    "git_source": {"git_url": REPO_URL, "git_branch": BRANCH},
+    "git_source": git_source,
     "tasks": [train_task, promote_task],
 }
+
+
 
 if EXISTING_CLUSTER_ID:
     train_task["existing_cluster_id"] = EXISTING_CLUSTER_ID
