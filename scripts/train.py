@@ -19,6 +19,13 @@ try:
 except Exception:
     EVIDENTLY_OK = False
 
+# Optional bootstrap: install requirements on job cluster if missing
+if __name__ == "__main__":
+    try:
+        import pandas  # snabb koll
+    except Exception:
+        import subprocess, sys
+        subprocess.check_call([sys.executable, "-m", "pip", "install", "-r", "requirements.txt"])
 
 def main(config_path: str):
     cfg = yaml.safe_load(Path(config_path).read_text())
