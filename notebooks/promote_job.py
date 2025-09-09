@@ -1,8 +1,4 @@
-# Databricks notebook: Promote latest model to Production if MAE improved
-# Reads the latest registered version of model_name, compares mae_holdout against current Production.
-# If better (lower MAE) or no Production exists, promotes latest to Production.
-
-# COMMAND ----------
+# Databricks notebook source
 dbutils.widgets.text("model_name", "taxi_fare_model", "Model name")
 model_name = dbutils.widgets.get("model_name")
 
@@ -16,7 +12,6 @@ def get_latest_version(name: str):
     versions = client.search_model_versions(f"name='{name}'")
     if not versions:
         raise ValueError(f"No versions found for model: {name}")
-    # pick highest version number as "latest"
     latest = max(versions, key=lambda v: int(v.version))
     return latest
 
@@ -29,7 +24,6 @@ latest_mae = get_metric(latest.run_id, "mae_holdout")
 print(f"Latest version: v{latest.version}, run_id={latest.run_id}, mae_holdout={latest_mae}")
 
 prod_mae = None
-prod_ver = None
 try:
     prod_list = client.get_latest_versions(name=model_name, stages=["Production"])
     if prod_list:
