@@ -23,7 +23,23 @@ Kör i Docker: docker build -t taxi-fare-service -f docker/Dockerfile .
 docker run --rm -p 8080:8080 taxi-fare-service
 
 
+FLÖDE:
 
-gfdg
+GitHub repo
+   │   (push/PR)
+   ▼
+GitHub Actions  ── (workflow: Deploy Databricks Job)
+   │   använder secrets: DATABRICKS_HOST + DATABRICKS_TOKEN
+   ▼
+Databricks Jobs (Workflows → Jobs)
+   ├─ Task 1: notebooks/train_job.py  → tränar, MLflow-logg, registrerar modell
+   └─ Task 2: notebooks/promote_job.py → jämför MAE, auto-promote till Production
+   ▼
+MLflow Model Registry (Models)
+   │  Stage: Production
+   ▼
+Databricks Model Serving (Models → Serve this model)
+   → HTTPS endpoint för /invocations
+
 
 
