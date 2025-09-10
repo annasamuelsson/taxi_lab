@@ -7,7 +7,11 @@ import sys
 import os, sys, subprocess
 from pathlib import Path
 
-REPO_ROOT = Path(__file__).resolve().parents[1]  # .../repo
+try:
+    REPO_ROOT = Path(__file__).resolve().parents[1]
+except NameError:
+    # Fallback om __file__ inte finns (t.ex. i notebook / REPL)
+    REPO_ROOT = Path.cwd()
 os.chdir(REPO_ROOT)  # gör repo-roten till CWD
 
 SRC_PATH = REPO_ROOT / "src"
