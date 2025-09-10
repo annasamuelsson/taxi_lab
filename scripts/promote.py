@@ -3,6 +3,30 @@ from mlflow.exceptions import RestException
 import os
 import sys
 
+# --- bootstrap: kör alltid från repo-roten och fixa PYTHONPATH ---
+import os, sys, subprocess
+from pathlib import Path
+
+REPO_ROOT = Path(__file__).resolve().parents[1]  # .../repo
+os.chdir(REPO_ROOT)  # gör repo-roten till CWD
+
+SRC_PATH = REPO_ROOT / "src"
+if str(SRC_PATH) not in sys.path:
+    sys.path.insert(0, str(SRC_PATH))
+
+def ensure_installed():
+    try:
+        import pandas  # snabb koll
+    except Exception:
+        subprocess.check_call([sys.executable, "-m", "pip", "install", "-r", str(REPO_ROOT / "requirements.txt")])
+    try:
+        import taxi_fare  # noqa
+    except Exception:
+        subprocess.check_call([sys.executable, "-m", "pip", "install", "-e", str(REPO_ROOT)])
+ensure_installed()
+# --- end bootstrap ---
+
+
 MODEL_NAME = os.environ.get("MODEL_NAME", "taxi_fare_model")
 
 client = MlflowClient()

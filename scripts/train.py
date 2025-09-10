@@ -19,16 +19,34 @@ try:
 except Exception:
     EVIDENTLY_OK = False
 
-# Optional bootstrap: install requirements on job cluster if missing
-if __name__ == "__main__":
+# --- bootstrap: kör alltid från repo-roten och fixa PYTHONPATH ---
+import os, sys, subprocess
+from pathlib import Path
+
+REPO_ROOT = Path(__file__).resolve().parents[1]  # .../repo
+os.chdir(REPO_ROOT)  # gör repo-roten till CWD
+
+SRC_PATH = REPO_ROOT / "src"
+if str(SRC_PATH) not in sys.path:
+    sys.path.insert(0, str(SRC_PATH))
+
+def ensure_installed():
     try:
         import pandas  # snabb koll
     except Exception:
-        import subprocess, sys
-        subprocess.check_call([sys.executable, "-m", "pip", "install", "-r", "requirements.txt"])
+        subprocess.check_call([sys.executable, "-m", "pip", "install", "-r", str(REPO_ROOT / "requirements.txt")])
+    try:
+        import taxi_fare  # noqa
+    except Exception:
+        subprocess.check_call([sys.executable, "-m", "pip", "install", "-e", str(REPO_ROOT)])
+ensure_installed()
+# --- end bootstrap ---
 
 def main(config_path: str):
-    cfg = yaml.safe_load(Path(config_path).read_text())
+    cfg_path = (REPO_ROOT / config_path) if not Path(config_path).is_file() else Path(config_path)
+    if not cfg_path.is_file():
+        raise FileNotFoundError(f"Config not found. Tried: {config_path} and {REPO_ROOT / config_path}")
+    cfg = yaml.safe_load(cfg_path.read_text())
     data_path = cfg["data_path"]
     target_col = cfg["target_col"]
     datetime_col = cfg["datetime_col"]
