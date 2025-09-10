@@ -74,7 +74,10 @@ def main(config_path: str):
     mapping = cfg["feature_mapping"]
     model_params = cfg["model_params"]
 
-    artifacts_dir = Path(cfg.get("artifacts_dir", "artifacts/models"))
+    #artifacts_dir = Path(cfg.get("artifacts_dir", "artifacts/models"))
+    #artifacts_dir.mkdir(parents=True, exist_ok=True)
+    artifacts_rel = cfg.get("artifacts_dir", "artifacts/models")
+    artifacts_dir = (repo_root / artifacts_rel)
     artifacts_dir.mkdir(parents=True, exist_ok=True)
 
     # Data & features
