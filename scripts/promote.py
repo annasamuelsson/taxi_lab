@@ -23,10 +23,11 @@ def ensure_installed():
         import pandas  # snabb koll
     except Exception:
         subprocess.check_call([sys.executable, "-m", "pip", "install", "-r", str(REPO_ROOT / "requirements.txt")])
-    try:
-        import taxi_fare  # noqa
-    except Exception:
-        subprocess.check_call([sys.executable, "-m", "pip", "install", "-e", str(REPO_ROOT)])
+#    try:
+#        import taxi_fare  # noqa
+#    except Exception:
+#        subprocess.check_call([sys.executable, "-m", "pip", "install", "-e", str(REPO_ROOT)])
+
 ensure_installed()
 # --- end bootstrap ---
 
