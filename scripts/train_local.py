@@ -3,9 +3,9 @@ import yaml
 from pathlib import Path
 import mlflow
 import mlflow.sklearn
-from taxi_fare.data import load_training_data
-from taxi_fare.features import build_features
-from taxi_fare.model import train_model, save_model
+from src.taxi_fare.data import load_training_data
+from src.taxi_fare.features import build_features
+from src.taxi_fare.model import train_model, save_model
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_absolute_error
 #from evidently.report import Report
@@ -18,17 +18,6 @@ try:
     EVIDENTLY_OK = True
 except Exception:
     EVIDENTLY_OK = False
-
-
-# högst upp i train.py
-try:
-    import threadpoolctl
-    from packaging.version import Version
-    if Version(threadpoolctl.__version__) < Version("3.5.1"):
-        raise ImportError
-except Exception:
-    import sys, subprocess
-    subprocess.check_call([sys.executable, "-m", "pip", "install", "--upgrade", "threadpoolctl>=3.5.1"])
 
 
 def main(config_path: str):
