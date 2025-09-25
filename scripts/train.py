@@ -9,6 +9,18 @@ from sklearn.metrics import mean_absolute_error
 # --- bootstrap: hitta repo-roten, fixa sys.path och beroenden ---
 import os, sys, subprocess
 
+
+# högst upp i train.py
+try:
+    import threadpoolctl
+    from packaging.version import Version
+    if Version(threadpoolctl.__version__) < Version("3.5.1"):
+        raise ImportError
+except Exception:
+    import sys, subprocess
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "--upgrade", "threadpoolctl>=3.5.1"])
+
+
 def find_repo_root(start: Path) -> Path:
     for p in [start, *start.parents]:
         if (p / "pyproject.toml").exists() or (p / ".git").exists() or (p / "configs").exists():
