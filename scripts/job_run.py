@@ -10,4 +10,4 @@ subprocess.check_call([sys.executable, "-m", "pip", "install", "--upgrade", "thr
 # subprocess.check_call([sys.executable, "-m", "pip", "install", "--upgrade", "scikit-learn>=1.3", "numpy>=1.25"])
 
 # Kör train.py
-runpy.run_path(str(Path(__file__).with_name("train.py")), run_name="__main__")
+runpy.run_module("train", run_name="__main__")
