@@ -1,3 +1,14 @@
+# högst upp i train.py
+try:
+    import threadpoolctl
+    from packaging.version import Version
+    if Version(threadpoolctl.__version__) < Version("3.5.1"):
+        raise ImportError
+except Exception:
+    import sys, subprocess
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "--upgrade", "threadpoolctl>=3.5.1"])
+
+
 import argparse
 import yaml
 from pathlib import Path
@@ -69,15 +80,7 @@ except Exception:
     EVIDENTLY_OK = False
 
 
-# högst upp i train.py
-try:
-    import threadpoolctl
-    from packaging.version import Version
-    if Version(threadpoolctl.__version__) < Version("3.5.1"):
-        raise ImportError
-except Exception:
-    import sys, subprocess
-    subprocess.check_call([sys.executable, "-m", "pip", "install", "--upgrade", "threadpoolctl>=3.5.1"])
+
 
 
 def main(config_path: str):
