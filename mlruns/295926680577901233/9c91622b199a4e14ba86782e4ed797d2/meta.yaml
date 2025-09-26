@@ -1,0 +1,14 @@
+artifact_uri: file:C:/Users/Anna/Desktop/taxi_lab/mlruns/295926680577901233/9c91622b199a4e14ba86782e4ed797d2/artifacts
+end_time: 1758800177804
+entry_point_name: ''
+experiment_id: '295926680577901233'
+lifecycle_stage: active
+run_id: 9c91622b199a4e14ba86782e4ed797d2
+run_name: rf_regressor
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1758800166377
+status: 3
+tags: []
+user_id: Anna

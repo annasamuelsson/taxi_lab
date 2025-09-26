@@ -1,0 +1,10 @@
+artifact_location: file:C:/Users/Anna/Desktop/taxi_lab/mlruns/295926680577901233/models/m-e3cfb598b26640fd96ae0d8a056a447e/artifacts
+creation_timestamp: 1758800166746
+experiment_id: '295926680577901233'
+last_updated_timestamp: 1758800177445
+model_id: m-e3cfb598b26640fd96ae0d8a056a447e
+model_type: null
+name: model
+source_run_id: 9c91622b199a4e14ba86782e4ed797d2
+status: 2
+status_message: null

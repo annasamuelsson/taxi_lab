@@ -1,0 +1,8 @@
+digest: 12027d09
+name: dataset
+profile: '{"num_rows": 3, "num_elements": 6}'
+schema: '{"mlflow_colspec": [{"type": "double", "name": "dist", "required": true},
+  {"type": "integer", "name": "hour", "required": true}]}'
+source: '{"tags": {"mlflow.user": "Anna", "mlflow.source.name": "scripts/train.py",
+  "mlflow.source.type": "LOCAL", "mlflow.source.git.commit": "78edfd127628298f70daf7bd4484d165e0d83dca"}}'
+source_type: code

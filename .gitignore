@@ -2,8 +2,4 @@ __pycache__/
 *.pyc
 .venv/
 .env
-artifacts/
-mlruns/
-dist/
-build/
 *.egg-info/

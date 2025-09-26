@@ -1,0 +1,6 @@
+artifact_location: file:C:/Users/Anna/Desktop/taxi_lab/mlruns/295926680577901233
+creation_time: 1756826945199
+experiment_id: '295926680577901233'
+last_update_time: 1756826945199
+lifecycle_stage: active
+name: taxi_fare_experiment
