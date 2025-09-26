@@ -4,8 +4,6 @@ __pycache__/
 .env
 artifacts/
 mlruns/
-data/*.csv
-data/*.parquet
 dist/
 build/
 *.egg-info/
