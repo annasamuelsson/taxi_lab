@@ -16,21 +16,9 @@ import mlflow
 import mlflow.sklearn
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_absolute_error
-from pathlib import Path
 
 # --- bootstrap: hitta repo-roten, fixa sys.path och beroenden ---
 import os, sys, subprocess
-
-
-# högst upp i train.py
-try:
-    import threadpoolctl
-    from packaging.version import Version
-    if Version(threadpoolctl.__version__) < Version("3.5.1"):
-        raise ImportError
-except Exception:
-    import sys, subprocess
-    subprocess.check_call([sys.executable, "-m", "pip", "install", "--upgrade", "threadpoolctl>=3.5.1"])
 
 
 def find_repo_root(start: Path) -> Path:
