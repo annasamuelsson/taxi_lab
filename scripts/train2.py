@@ -70,27 +70,8 @@ def main(config_path: str):
     mapping = cfg["feature_mapping"]
     model_params = cfg["model_params"]
 
-    # --- path helpers (snabbfix) ---
-    def dbfs_to_os(p: str) -> str:
-        return "/dbfs/" + p[len("dbfs:/"):] if isinstance(p, str) and p.startswith("dbfs:/") else p
-
-    def resolve_under_repo(p: str | Path) -> Path:
-        p = Path(dbfs_to_os(str(p)))
-        if p.is_absolute():
-            return p
-        cand = repo_root / p               # försök under repo-roten
-        if cand.exists():
-            return cand
-        cand2 = cfg_path.parent / p        # försök relativt configens mapp
-        if cand2.exists():
-            return cand2
-        return cand                        # returnera under repo-root (låter ev. fel bubbla)
-
-    # Data & features (använd resolvad väg)
-    data_path_resolved = resolve_under_repo(data_path)
-    print(f"[debug] repo_root={repo_root} | cwd={Path.cwd()} | data={data_path_resolved}", flush=True)
-
-    df = load_training_data(str(data_path_resolved))
+    # Data & features
+    df = load_training_data(data_path)
     X = build_features(df, mapping, datetime_col)
     y = df[target_col]
 
@@ -109,7 +90,7 @@ def main(config_path: str):
         mae = mean_absolute_error(y_test, y_pred)
         mlflow.log_metric("mae_holdout", mae)
 
-        # Logga modellen direkt till MLflow (ingen lokal mapp)
+        # ⬇️ Nyckeln i Alternativ A: logga modellen direkt till MLflow (ingen lokal mapp)
         mlflow.sklearn.log_model(model, artifact_path="model")
 
         # Evidently-rapport (om Evidently finns): skriv till /tmp och logga till MLflow
