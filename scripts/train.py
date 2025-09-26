@@ -16,6 +16,7 @@ import mlflow
 import mlflow.sklearn
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_absolute_error
+from pathlib import Path
 
 # --- bootstrap: hitta repo-roten, fixa sys.path och beroenden ---
 import os, sys, subprocess
@@ -105,8 +106,6 @@ def main(config_path: str):
     # artifacts_rel = cfg.get("artifacts_dir", "artifacts/models")
     # artifacts_dir = (repo_root / artifacts_rel)
     # artifacts_dir.mkdir(parents=True, exist_ok=True)
-
-    from pathlib import Path
 
     def dbfs_to_os(p: str) -> str:
         return "/dbfs/" + p[len("dbfs:/"):] if p.startswith("dbfs:/") else p
