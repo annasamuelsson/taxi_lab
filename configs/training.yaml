@@ -12,4 +12,4 @@ model_params:
 mlflow_uri: "databricks" # "file:./mlruns"
 experiment_name: "taxi_fare_experiment"
 model_registry_name: "taxi_fare_model"
-artifacts_dir: "/local_disk0/taxi_fare/artifacts/models" # "artifacts/models"
+artifacts_dir: "dbfs:/tmp/taxi_fare/artifacts/models" # "/local_disk0/taxi_fare/artifacts/models" # "artifacts/models"

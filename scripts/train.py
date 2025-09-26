@@ -102,9 +102,19 @@ def main(config_path: str):
 
     #artifacts_dir = Path(cfg.get("artifacts_dir", "artifacts/models"))
     #artifacts_dir.mkdir(parents=True, exist_ok=True)
-    artifacts_rel = cfg.get("artifacts_dir", "artifacts/models")
-    artifacts_dir = (repo_root / artifacts_rel)
+    # artifacts_rel = cfg.get("artifacts_dir", "artifacts/models")
+    # artifacts_dir = (repo_root / artifacts_rel)
+    # artifacts_dir.mkdir(parents=True, exist_ok=True)
+
+    from pathlib import Path
+
+    def dbfs_to_os(p: str) -> str:
+        return "/dbfs/" + p[len("dbfs:/"):] if p.startswith("dbfs:/") else p
+
+    artifacts_str = cfg.get("artifacts_dir", "artifacts/models")
+    artifacts_dir = Path(dbfs_to_os(artifacts_str))
     artifacts_dir.mkdir(parents=True, exist_ok=True)
+
 
     # Data & features
     df = load_training_data(data_path)
