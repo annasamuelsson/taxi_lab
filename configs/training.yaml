@@ -9,7 +9,7 @@ feature_mapping:
 model_params:
   n_estimators: 200
   random_state: 42
-mlflow_uri: "file:./mlruns"
+mlflow_uri: "databricks" # "file:./mlruns"
 experiment_name: "taxi_fare_experiment"
 model_registry_name: "taxi_fare_model"
-artifacts_dir: "artifacts/models"
+artifacts_dir: "/local_disk0/taxi_fare/artifacts/models" # "artifacts/models"
