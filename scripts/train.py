@@ -100,8 +100,22 @@ def main(config_path: str):
 
     # MLflow setup — logga direkt till Databricks MLflow
     mlflow.set_tracking_uri(cfg.get("mlflow_uri", "databricks"))
-    mlflow.set_experiment(cfg.get("experiment_name", "/Shared/taxi_fare_experiment"))
+
+    # Bygg en robust experiment-path:
+    exp_cfg = cfg.get("experiment_name")  # kan vara None, "taxi_fare_experiment" eller "/Shared/xyz"
+    if not exp_cfg or str(exp_cfg).strip().lower() == "none":
+        exp_path = "/Shared/taxi_fare_experiment"
+    else:
+        exp_str = str(exp_cfg).strip()
+        exp_path = exp_str if exp_str.startswith("/") else f"/Shared/{exp_str}"
+
+    print(f"[debug] Using MLflow experiment: {exp_path}", flush=True)
+
+    # Viktigt: använd keyword-arg så vi inte råkar tolka värdet som experiment_id
+    mlflow.set_experiment(experiment_name=exp_path)
+
     mlflow.sklearn.autolog(log_input_examples=True, log_model_signatures=True)
+
 
     with mlflow.start_run(run_name="rf_regressor"):
         model = train_model(X_train, y_train, **model_params)

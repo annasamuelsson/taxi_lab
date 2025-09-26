@@ -10,6 +10,6 @@ model_params:
   n_estimators: 200
   random_state: 42
 mlflow_uri: "databricks" # "file:./mlruns"
-experiment_name: "taxi_fare_experiment"
+experiment_name: "taxi_fare_experiment" # koden gör den till /Shared/taxi_fare_experimen
 model_registry_name: "taxi_fare_model"
 # artifacts_dir: "dbfs:/tmp/taxi_fare/artifacts/models" # "/local_disk0/taxi_fare/artifacts/models" # "artifacts/models"
