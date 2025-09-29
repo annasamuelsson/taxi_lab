@@ -20,6 +20,7 @@ import mlflow
 import mlflow.sklearn
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_absolute_error
+from mlflow.models.signature import infer_signature
 
 UC_CATALOG = os.getenv("UC_CATALOG", "main")      # byt vid behov
 UC_SCHEMA  = os.getenv("UC_SCHEMA",  "default")   # byt vid behov
@@ -122,7 +123,7 @@ def main(config_path: str):
     # Viktigt: använd keyword-arg så vi inte råkar tolka värdet som experiment_id
     mlflow.set_experiment(experiment_name=exp_path)
 
-    mlflow.sklearn.autolog(log_input_examples=True, log_model_signatures=True)
+    mlflow.sklearn.autolog(log_models=False, log_input_examples=True, log_model_signatures=True)
 
 
     with mlflow.start_run(run_name="rf_regressor"):
@@ -133,12 +134,20 @@ def main(config_path: str):
 
         # Logga modellen direkt till MLflow (ingen lokal mapp)
         #mlflow.sklearn.log_model(model, artifact_path="model")
+        y_pred = model.predict(X_test)
 
+        # Skapa signature (måste innehålla både inputs och outputs)
+        signature = infer_signature(X_test, y_pred)
+
+        # Litet input-exempel (valfritt men bra för UC)
+        input_example = X_test.iloc[:5] if hasattr(X_test, "iloc") else X_test[:5]
         # logga + REGISTRERA i UC (viktigt!)
         mlflow.sklearn.log_model(
             model,
             artifact_path="model",
-            registered_model_name=MODEL_NAME
+            registered_model_name=MODEL_NAME,
+            signature=signature,
+            input_example=input_example,
         )
 
         # Evidently-rapport (om Evidently finns): skriv till /tmp och logga till MLflow
