@@ -20,8 +20,8 @@ jobs:
 
       - name: Deploy/Update Databricks Job
         env:
-          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
-          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+          DATABRICKS_HOST: ${{ secrets.FREE_DATABRICKS_HOST }}
+          DATABRICKS_TOKEN: ${{ secrets.FREE_DATABRICKS_TOKEN }}
           BRANCH: ${{ github.ref_name }}
           # REPO_URL lämnas tom -> skriptet använder https://github.com/${{ github.repository }}.git
         run: |

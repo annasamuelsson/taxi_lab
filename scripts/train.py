@@ -21,6 +21,14 @@ import mlflow.sklearn
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_absolute_error
 
+UC_CATALOG = os.getenv("UC_CATALOG", "main")      # byt vid behov
+UC_SCHEMA  = os.getenv("UC_SCHEMA",  "default")   # byt vid behov
+BASE_NAME  = os.getenv("BASE_MODEL_NAME", "taxi_fare_model")
+MODEL_NAME = f"{UC_CATALOG}.{UC_SCHEMA}.{BASE_NAME}"
+
+# (valfritt men tydligt) – säkerställ UC som registry
+mlflow.set_registry_uri("databricks-uc")
+
 # --- bootstrap: hitta repo-roten och fixa sys.path ---
 def find_repo_root(start: Path) -> Path:
     for p in [start, *start.parents]:
@@ -121,10 +129,17 @@ def main(config_path: str):
         model = train_model(X_train, y_train, **model_params)
         y_pred = model.predict(X_test)
         mae = mean_absolute_error(y_test, y_pred)
-        mlflow.log_metric("mae_holdout", mae)
+        mlflow.log_metric("mae_holdout", float(mae))
 
         # Logga modellen direkt till MLflow (ingen lokal mapp)
-        mlflow.sklearn.log_model(model, artifact_path="model")
+        #mlflow.sklearn.log_model(model, artifact_path="model")
+
+        # logga + REGISTRERA i UC (viktigt!)
+        mlflow.sklearn.log_model(
+            model,
+            artifact_path="model",
+            registered_model_name=MODEL_NAME
+        )
 
         # Evidently-rapport (om Evidently finns): skriv till /tmp och logga till MLflow
         report_path = None

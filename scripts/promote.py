@@ -42,10 +42,23 @@ def ensure_installed():
 ensure_installed()
 # --- end bootstrap ---
 
+import mlflow
 from mlflow.tracking import MlflowClient
 from mlflow.exceptions import RestException
 
-MODEL_NAME = os.environ.get("MODEL_NAME", "taxi_fare_model")
+#MODEL_NAME = os.environ.get("MODEL_NAME", "taxi_fare_model")
+
+def resolve_model_name(base_name: str) -> str:
+    uri = mlflow.get_registry_uri()
+    if uri and uri.startswith("databricks-uc") and base_name.count(".") != 2:
+        cat = os.getenv("UC_CATALOG", "main")
+        sch = os.getenv("UC_SCHEMA", "default")
+        return f"{cat}.{sch}.{base_name}"
+    return base_name
+
+BASE_MODEL_NAME = os.environ.get("MODEL_NAME", "taxi_fare_model")
+MODEL_NAME = resolve_model_name(BASE_MODEL_NAME)
+
 client = MlflowClient()
 
 
