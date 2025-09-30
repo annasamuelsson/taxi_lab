@@ -66,7 +66,6 @@ MODEL_NAME = resolve_model_name(BASE_MODEL_NAME)
 
 client = MlflowClient()
 
-
 def get_latest_ready_version(name: str):
     """
     UC stödjer inte stage-baserade 'latest'. Vi hämtar senaste READY-versionen manuellt.
@@ -78,7 +77,6 @@ def get_latest_ready_version(name: str):
     candidates = ready if ready else versions
     return max(candidates, key=lambda v: int(v.version))
 
-
 def get_version_by_alias(name: str, alias: str):
     """
     Hämta model version som alias pekar på (UC).
@@ -88,11 +86,9 @@ def get_version_by_alias(name: str, alias: str):
     except Exception:
         return None
 
-
 def get_metric(run_id: str, metric_name: str):
     r = client.get_run(run_id)
     return r.data.metrics.get(metric_name)
-
 
 def main() -> int:
     # Kandidat = senaste READY-version
@@ -136,6 +132,22 @@ def main() -> int:
         print("Not promoting: latest candidate is not better than current alias.")
         return 0
 
+def _running_in_databricks():
+    # Heuristik: i DBR finns ofta någon av dessa variabler
+    env = os.environ
+    return (
+        "DATABRICKS_RUNTIME_VERSION" in env
+        or "DATABRICKS_JOBS_RUN_ID" in env
+        or "DB_HOME" in env
+        or "SPARK_HOME" in env  # ofta satt i klustret
+    )
 
 if __name__ == "__main__":
-    sys.exit(main())
+    rc = main()
+    if _running_in_databricks():
+        # I notebooks: kasta endast exception om rc != 0, annars låt cellen lyckas
+        if rc != 0:
+            raise RuntimeError(f"promote.py failed with code {rc}")
+    else:
+        # I vanlig Python-process: korrekt exit-kod
+        sys.exit(rc)
